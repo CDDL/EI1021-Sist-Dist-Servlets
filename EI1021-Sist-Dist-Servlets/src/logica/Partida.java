@@ -1,4 +1,4 @@
-package servlets.hundirLaFlota;
+package logica;
 
 import java.util.Random;
 import java.util.Vector;
@@ -14,6 +14,7 @@ public class Partida {
 	 * constantes enteras negativas.
 	 */
 	private int mar[][] = null;				// matriz que contendra el mar y los barcos en distintos estados
+	private boolean misDisparos[][] = null; // matriz que contendra los disparos realizados
 	private int numFilas, 					// numero de filas del tablero
 				numColumnas;				// numero de columnas del tablero
 	private Vector<Barco> barcos = null;	// vector dinamico de barcos
@@ -38,6 +39,7 @@ public class Partida {
         this.numFilas = nf;
         this.numColumnas = nc;
         crearMar();
+        iniciaDisparos();
         
         this.numBarcos = nb;
         crearBarcos();
@@ -67,6 +69,16 @@ public class Partida {
 		}
 
 	}
+	 /**
+	  * Crea la matriz de misDisparos y pone el valor false a todas
+	  */
+	private void iniciaDisparos() {
+		misDisparos = new boolean[numFilas][numColumnas];
+		for (int fil = 0; fil < numFilas; fil++) {
+			for (int col = 0; col < numColumnas; col++)
+				misDisparos[fil][col] = false;
+		}
+	}
 
 	/**
 	 * Dispara sobre una casilla y devuelve el resultado
@@ -76,22 +88,31 @@ public class Partida {
 	 */
     public int pruebaCasilla(int f, int c) {
     	int contenido = mar[f][c];
-        if(contenido>=0){  // Si contenido es > a 0 es la id de barco, no puede ser agua ni ninguna otra opcion
-        	Barco barco = barcos.get(contenido);
-        	barco.tocarBarco();
-            mar[f][c] = TOCADO;
-        	if(barco.estaDestruido()){ // Debemos comprobar si una vez tocado el barco ha sido destruido
-                destruirBarco(barco.toString());  // Cambia todas las casillas del barco a destruidas
-        		return contenido; // Devuelve la id del barco
-        	}
-        	return TOCADO;
-
-        }
+    	boolean disparado = casillaDisparada(f,c);
+    	if (disparado) {
+	        if(contenido>=0){  // Si contenido es > a 0 es la id de barco, no puede ser agua ni ninguna otra opcion
+	        	Barco barco = barcos.get(contenido);
+	        	barco.tocarBarco();
+	            mar[f][c] = TOCADO;
+	        	if(barco.estaDestruido()){ // Debemos comprobar si una vez tocado el barco ha sido destruido
+	                destruirBarco(barco.toString());  // Cambia todas las casillas del barco a destruidas
+	        		return contenido; // Devuelve la id del barco
+	        	}
+	        	return TOCADO;
+	
+	        }
+    	}
     	return contenido; // Devuelve si es agua, tocado, o hundido solo
     }
 
 
-    /**
+    private boolean casillaDisparada(int f, int c) {
+    	if (misDisparos[f][c] == false)
+    		return true;
+    	return false;
+	}
+
+	/**
      * Descompone las caracteristicas del barco i las asignas a variables locales del metodo
      * @param   barco   Caracteristicas del barco
      */
@@ -145,7 +166,18 @@ public class Partida {
 		return solucion;
 	}
     
-
+	public int getCasilla(int f, int c) {
+		return mar[f][c];
+	}
+	
+	public int getDisparos() {
+		return disparos;
+	}
+	
+	public int getNumBarcos() {
+		return quedan;
+	}
+	
 	/********************************    METODOS PRIVADOS  ********************************************/
     
 	

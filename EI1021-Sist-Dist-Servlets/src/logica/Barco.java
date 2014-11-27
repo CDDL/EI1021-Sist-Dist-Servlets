@@ -1,4 +1,4 @@
-package servlets.hundirLaFlota;
+package logica;
 
 public class Barco {	
 	/**
