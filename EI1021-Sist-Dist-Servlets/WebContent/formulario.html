@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body lang="es">
+    <meta charset="UTF-8">
+    <center>
+        <table border="1">
+            <tr>
+                <td align="center"><h2>Registro de jugadores de "Hundir la Flota"</h2></td>
+            </tr>
+            <tr>
+                <td>
+                    <table style="width:100%">
+                        <form name="input" action="javascript:alert('No esta habilitado')" method="get">
+                            <tr><td>Nombre(*):</td><td><input type="text" name="nombre" required></td></tr>
+                            <tr><td>Primer apellido(*):</td><td><input type="text" name="apellido" required></td></tr>
+                            <tr><td>Segundo apellido:</td><td><input type="text" name="apellido2"></td></tr>
+                            <tr><td>DNI(*):</td><td><input type="text" name="DNI" required></td></tr>
+                            <tr><td>Email:</td><td><input type="email" name="email"></td></tr>
+                            <tr><td>Tipo de pago(*):</td><td>
+                                <input type="radio" name="pago" value="Contrarreembolso">Contrarreembolso
+                                <input type="radio" name="pago" value="Tarjeta Visa">Tarjeta Visa
+                                <input type="radio" name="pago" value="Cheque">Cheque
+                            </td></tr>
+                            <tr><td>Constraseña(*):</td><td><input type="password" name="contraseña" onchange="form.contraseña2.pattern = this.value;" required></td></tr>
+                            <tr><td>Repetir constraseña(*):</td><td><input type="password" name="contraseña2" required></td></tr>
+
+                            <td><input type="submit" value="Enviar Datos" style="display: block;margin:auto;"></td>
+                            <td><input type="reset" value="Borrar Datos" style="display: block;margin:auto;"></td>
+
+                        </form>
+                    </table>
+
+                </td>
+            </tr>
+            <tr>
+                <td style="font-style: oblique">(*)Los campos con asterisco son obligatorios.</td>
+            </tr>
+        </table>
+    </center>
+</body>
+</html>
