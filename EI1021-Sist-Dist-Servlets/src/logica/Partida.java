@@ -171,6 +171,10 @@ public class Partida {
 		return mar[f][c];
 	}
 	
+	public boolean getEstadoDisparo(int f, int c) {
+		return misDisparos[f][c];
+	}
+	
 	public int getDisparosEfectuados() {
 		return disparos;
 	}
