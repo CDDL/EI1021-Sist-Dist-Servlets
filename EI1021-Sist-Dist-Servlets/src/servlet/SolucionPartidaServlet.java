@@ -31,7 +31,6 @@ public class SolucionPartidaServlet extends HttpServlet {
 		finalizarCodigoHTML(out);
 		
 		
-		super.doGet(req, resp);
 	}
 
 
