@@ -279,6 +279,10 @@ public class Partida {
         resultado = resultado || ( (ori == 'V') && (fila+i == numFilas) );
         return resultado;
     }
+
+	public int getBarcosHundidos() {
+		return numBarcos-quedan;
+	}
     
     
 } // end class Partida
