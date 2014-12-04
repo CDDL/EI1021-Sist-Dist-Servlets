@@ -93,6 +93,7 @@ public class Partida {
 	        if(contenido>=0){  // Si contenido es > a 0 es la id de barco, no puede ser agua ni ninguna otra opcion
 	        	Barco barco = barcos.get(contenido);
 	        	barco.tocarBarco();
+	        	misDisparos[f][c] = true;
 	            mar[f][c] = TOCADO;
 	        	if(barco.estaDestruido()){ // Debemos comprobar si una vez tocado el barco ha sido destruido
 	                destruirBarco(barco.toString());  // Cambia todas las casillas del barco a destruidas
@@ -170,11 +171,11 @@ public class Partida {
 		return mar[f][c];
 	}
 	
-	public int getDisparos() {
+	public int getDisparosEfectuados() {
 		return disparos;
 	}
 	
-	public int getNumBarcos() {
+	public int getBarcosQuedan() {
 		return quedan;
 	}
 	
