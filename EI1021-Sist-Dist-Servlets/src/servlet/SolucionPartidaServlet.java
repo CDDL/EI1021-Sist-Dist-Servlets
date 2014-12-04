@@ -152,8 +152,8 @@ public class SolucionPartidaServlet extends HttpServlet {
 
 
 	private void crearLinks(PrintWriter out) {
-		out.print("<a href=\"url\">Nueva partida</a><br>"
-				+ "<a href=\"url\">Salir</a><br>");
+		out.print("<a href=\"NuevaPartidaServlet\">Nueva partida</a><br>"
+				+ "<a href=\"SalirServlet\">Salir</a><br>");
 	}
 	
 	private void finalizarCodigoHTML(PrintWriter out) {
