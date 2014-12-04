@@ -12,10 +12,6 @@ import javax.servlet.http.HttpSession;
 
 import logica.Partida;
 
-/**
- * Servlet implementation class HundirLaFlotaServlet
- */
-@WebServlet("/HundirLaFlotaServlet")
 public class HundirLaFlotaServlet extends HttpServlet {
 	
 	private static final int NUMFILAS = 8, NUMCOL = 8, NUMBARCOS = 6;
@@ -27,12 +23,9 @@ public class HundirLaFlotaServlet extends HttpServlet {
 	int fila, columna, estadoDisparo;
 	int estadoPartida;
 	
-	
-    public HundirLaFlotaServlet() {
-        super();
-        
-    }
-
+	public HundirLaFlotaServlet() {
+		super();
+	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Recuperar el objeto sesion
