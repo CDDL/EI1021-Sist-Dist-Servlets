@@ -26,13 +26,6 @@ public class HundirLaFlotaServlet extends HttpServlet {
 	Partida partida;
 	int fila, columna, estadoDisparo;
 	int estadoPartida;
-	
-	
-    public HundirLaFlotaServlet() {
-        super();
-        
-    }
-
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Recuperar el objeto sesion
