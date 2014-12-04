@@ -19,6 +19,10 @@ public class NuevaPartidaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String direccion = "NuevaPartidaServlet";
 	
+	public NuevaPartidaServlet() {
+		super();
+	}
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Obtiene la session
 		HttpSession session = request.getSession();

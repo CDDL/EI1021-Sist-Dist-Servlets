@@ -16,7 +16,9 @@ import javax.servlet.http.HttpSession;
 public class SalirPartidaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	
+	public SalirPartidaServlet() {
+		super();
+	}
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Obtiene la session
 		HttpSession session = request.getSession();
