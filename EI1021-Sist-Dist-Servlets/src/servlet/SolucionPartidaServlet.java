@@ -59,20 +59,22 @@ public class SolucionPartidaServlet extends HttpServlet {
 	}
 
 	private void crearTablero(PrintWriter out, Partida partida) {
-		out.print("<table style=\"width:100%\">");
+		out.print("<table width=\"20%\">");
 		out.print("<tr>");
 		crearLetras(out);
 		out.print("</tr>");
 		int[][] matrizSolucionesAux = crearMatrizSoluciones(partida.getSolucion());
 		for(int filas = 0; filas<8;filas++){
 			out.print("<tr>");
-			crearFila(out,matrizSolucionesAux[filas]);
+			crearFila(out,matrizSolucionesAux[filas],filas+1);
 			out.print("</tr>");
 		}
+		out.print("</table>");
 		out.print("<br>");
 	}
 
-	private void crearFila(PrintWriter out, int[] fila) {
+	private void crearFila(PrintWriter out, int[] fila,int filaActual) {
+		out.print("<td><b>"+ filaActual+"</b></td>");
 		for(int estadoPosicion: fila){
 			if(estadoPosicion == AZUL){
 				out.print("<td style=\"background-color:blue\"></td>");
@@ -142,7 +144,7 @@ public class SolucionPartidaServlet extends HttpServlet {
 	private void crearLetras(PrintWriter out) {
 		out.print("<td></td>");
 		for (char letra = 'A'; letra <= 'H'; letra++) {
-			out.print("<td>"+letra+"</td>");
+			out.print("<th><b>"+letra+"</b></th>");
 		}
 	}
 
@@ -152,7 +154,7 @@ public class SolucionPartidaServlet extends HttpServlet {
 
 	private void crearLinks(PrintWriter out) {
 		out.print("<a href=\"NuevaPartidaServlet\">Nueva partida</a><br>"
-				+ "<a href=\"SalirServlet\">Salir</a><br>");
+				+ "<a href=\"SalirPartidaServlet\">Salir</a><br>");
 	}
 	
 	private void finalizarCodigoHTML(PrintWriter out) {
@@ -160,7 +162,7 @@ public class SolucionPartidaServlet extends HttpServlet {
 	}
 	
 	private Partida extraerDatosPartida(HttpServletRequest req) {
-//		return (Partida) req.getSession().getAttribute("partida");
-		return new Partida();
+		return (Partida) req.getSession().getAttribute("partida");
+//		return new Partida();
 	}
 }
