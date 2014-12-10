@@ -2,6 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,144 +16,210 @@ import logica.Partida;
 public class HundirLaFlotaServlet extends HttpServlet {
 	
 	private static final int NUMFILAS = 8, NUMCOL = 8, NUMBARCOS = 6;
-	private static final int NUEVA = 0, FINAL = 1, PROCESO = 2; 
+	private static final int NUEVA = 0, FINAL = 1, PROCESO = 2, SINDATO = -1 ; 
 	private static final int AGUA = -1, TOCADO = -2, HUNDIDO = -3;
 	
 	private static final long serialVersionUID = 1L;
 	Partida partida;
 	int fila, columna, estadoDisparo;
 	int estadoPartida;
+	PrintWriter pr;
 	
+	/**
+	 * Constructor por defecto
+	 */
 	public HundirLaFlotaServlet() {
 		super();
 	}
 
+	/**
+	 * Método que ejecutará una petición con el METHOD GET
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		recuperarDatos(request);
+		guardarSession(request);
+		// Definir el tipo de contenido
+		response.setContentType("text/html;charset=UTF-8");
+		pr = response.getWriter();
+		
+		escribirCabecera();
+		estadoPartida();
+		dibujarTablero();
+		crearLinks();
+		escribierPie();
+		
+	}
+
+	/**
+	 * Método para recuperar los datos de la session, si hay, y se ejecuta la acción en partida
+	 * @param request La peticion recibida del Formulario
+	 */
+	private void recuperarDatos(HttpServletRequest request) {
 		// Recuperar el objeto sesion
 		HttpSession session = request.getSession(true);
 		
 		partida = (Partida) session.getAttribute("partida");
+		// Si es null, se crea una partida nueva
 		if (partida == null) {
 			partida = new Partida(NUMFILAS,NUMCOL, NUMBARCOS);
 			estadoPartida = NUEVA;
 		}
-		else {
+		// Hay una partida iniciada y continua en ella
+		else { 
+			// Aun quedan barcos por destruir, el juego sigue
 			if (partida.getBarcosQuedan() > 0) {
 				estadoPartida = PROCESO;
-				String botonDisparo = (String) session.getAttribute("disparo");
-				String[] casillasDisparo = botonDisparo.split("x");
-				fila = Integer.valueOf(casillasDisparo[0]);
-				columna = Integer.valueOf(casillasDisparo[1]);
-				estadoDisparo = partida.pruebaCasilla(fila, columna);
+				String botonDisparo = (String) request.getParameter("disparo");
+				// Condición por si se hace un submit sin un boton seleccionado
+				if (botonDisparo == null)
+					estadoPartida = SINDATO;
+				else {
+					String[] casillasDisparo = botonDisparo.split("x");
+					fila = Integer.valueOf(casillasDisparo[0]);
+					columna = Integer.valueOf(casillasDisparo[1]);
+					estadoDisparo = partida.pruebaCasilla(fila, columna);
+					if (partida.getBarcosQuedan() == 0)
+						estadoPartida = FINAL;
+				}
 			}
+			// No quedan barcos por destruir, el juego se ha acabado
 			else
 				estadoPartida = FINAL;
 		}
 		
-		// Guardar la sesion
-		session.setAttribute("partida", partida);
-		
-		// Definir el tipo de contenido
-		response.setContentType("text/html;charset=UTF-8");
-		PrintWriter pr = response.getWriter();
-		
+	}
+	
+	/**
+	 * Método para guardar la partida y definir el tiempo de inactividad en infinito
+	 * @param request La petición recibida del formulario
+	 */
+	private void guardarSession(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		// Guardar la sesion, con la acción realizada
+				session.setMaxInactiveInterval(-1);
+				session.setAttribute("partida", partida);
+	}
+	
+	/**
+	 * Método para escribir la cabecera HTML y el principio del cuerpo
+	 */
+	private void escribirCabecera() {
 		//Cabecera pagina
 		pr.println("<html>"
 				+ "<head><title>Hundir la flota</title></head>");
 		
 		//Cuerpo pagina
 		pr.println("<body>"
-				+ "<h2>Hundir la flota</h2> <br>");
-		
-		estadoPartida(pr);
-		dibujarTablero(pr);
-		
-		// Pie de pagina
-		//TODO Poner los nombres del servlet
-		pr.println("<a href=\"\">Muestra solución</a><br>"
-				+ "<a href=\"\">NuevaPartida</a><br>"
-				+ "<a href=\"\">Salir</a>");
-		
-		pr.println("</body>"
-				+ "</html>");
+				+ "<h1>Hundir la flota</h1> <br>");
 	}
 
-
-	private void estadoPartida(PrintWriter pr) {
+	/**
+	 * Método para escribir el código HTML de la información de la partida
+	 */
+	private void estadoPartida() {
 		switch (estadoPartida) {
 			case NUEVA:
 				pr.println("<b> Nueva partida</b> <br>"
-						+ "Barcos navegando: " + NUMBARCOS + "- Barcos hundidos: 0 <br>"
+						+ "Barcos navegando: " + NUMBARCOS + " - Barcos hundidos: 0 <br>"
 						+ "Número de disparos efectuados: 0 <br>");
 				break;
-				
 			case PROCESO:
-				pr.println("Página de resultado del disparo en (" + fila + ", " + ((char)columna + 64) + "): Ok!<br>"
-						+ "Barcos navegando: " + (6 - partida.getBarcosQuedan()) + "- Barcos hundidos:" + partida.getBarcosQuedan() + "<br>"
+				pr.println("Página de resultado del disparo en (" + fila + ", " + ((char) (columna + 65)) + "): Ok!<br>"
+						+ "Barcos navegando: " + partida.getBarcosQuedan() + " - Barcos hundidos:" + (NUMBARCOS - partida.getBarcosQuedan()) + "<br>"
 								+ "Número de disparos efectuados: " + partida.getDisparosEfectuados() + "<br>");
 				break;
-			
 			case FINAL:
 				pr.println("<b>GAME OVER</b>");
 				break;
+			case SINDATO:
+				pr.println("Sin disparo efectuado <br>"
+						+ "Barcos navegando: " + NUMBARCOS + " - Barcos hundidos: 0 <br>"
+						+ "Número de disparos efectuados: 0 <br>");
 		}
 			
 	}
 	
-	private void dibujarTablero(PrintWriter pr) {
-		if (estadoPartida == NUEVA) {
-			pr.println("<table width=\"20\">");
-			for (int filaT = 0; filaT <= 8; filaT++) {
-				// Dibuja las letra que son el numero de columna
-				if (filaT == 0) {
-					for (int columnaT = 0; columnaT <= 8; columnaT++) {
-						pr.println("<tr>");
-						if (columnaT == 0)
-							pr.println("<td></td>");
-						else
-							pr.println("<td align=\"center\">" + ((char) columnaT + 64) + "</td>");
-					}
-					pr.println("</tr>");
-				}
-				// Dibuja el resto del tablero
-				else {
-					pr.println("<tr>");
-					for (int columnaT = 1; columnaT <= 8; columnaT++) {
-						// Dibuja los numeros de la fila
-						if (columnaT == 0)
-							pr.println("<td align=\"center\">" + filaT + "</td>");
-						else {
-							boolean isDisparado = partida.getEstadoDisparo(filaT,columnaT);
-							pr.print("<td");
-							// Si la casilla ha sido disparada le pone color
-							if (isDisparado) {
-								int estadoCasilla = partida.getCasilla(filaT, columnaT);
-								switch (estadoCasilla) {
-									case AGUA:
-										pr.print(" style=\"background-color:cyan\"");
-										break;
-									
-									case TOCADO:
-										pr.print(" style=\"background-color:orange\"");
-										break;
-	
-									case HUNDIDO:
-										pr.print(" style=\"background-color:red\"");
-										break;
-								}
-							}
-							// La casilla no ha sido disparada no pone el Style por lo que no la pinta y rellena el html de toda la fila
-							pr.print( "><input type=\"radio\" name=\"radioboton\" value=\"" + filaT + "#" + columnaT +"\" style=\"display: block;margin:auto;\"></td>");
-						}
-					}
-					pr.println("</tr>"); 
-				}
-			} // fin for de filas
-			// Dibuja el boton de submit
-			pr.println("<tr>"
-					+ "<td align=\"center\"><input type=\"sumit\" value=\"submit\"></td>"
-					+ "</tr>"
-				+ "</table>");
+	/**
+	 * Método para escribir el código HTML para crear el tablero de juego y dibujar la partida en proceso
+	 */
+	private void dibujarTablero() {
+		pr.print("<form action=\"HundirLaFlotaServlet\" method=\"GET\">");
+		pr.println("<table style=\"width:400\">");
+		pr.println("<tr>");
+		crearLetras();
+		pr.println("</tr>");
+		for (int i = 0; i < 8; i++) {
+			pr.println("<tr>");
+			crearFila(i);
+			pr.println("</tr>");
 		}
-	} // fin dibujarTableroVacio
+		pr.println("<tr>"
+				+ "<td align=\"center\" colspan=\"9\"><input type=\"submit\" value=\"submit\"></td>"
+				+ "</tr>");
+		pr.println("<br>"
+				+ "</table>"
+				+ "</form>");
+	}
+	
+	/**
+	 * Método para dibujar la parte superior del tablero que corresponde a la letras
+	 */
+	private void crearLetras() {
+		pr.print("<td></td>");
+		for (char letra = 'A'; letra <= 'H'; letra++) {
+			pr.print("<td align=\"center\"><b>"+letra+"</b></td>");
+		}
+	}
+
+	/**
+	 * Método para dibujar la fila del tablero numFila
+	 * @param numFila número de la fila a dibujar.
+	 */
+	private void crearFila(int numFila) {
+		pr.println("<td align=\"center\"><b>" + (numFila+1) + "</b></td>");
+		for (int col = 0; col < 8; col++) {
+			crearColumnas(numFila, col);
+		}
+	}
+
+	/**
+	 * Método para dibujar y pintar la columna numCol de la fila numFila
+	 * @param numFila fila en la que esta la columna
+	 * @param numCol en que columna estas
+	 */
+	private void crearColumnas(int numFila, int numCol) {
+		pr.print("<td align=\"center\" ");
+		boolean isDisparado = partida.getEstadoDisparo(numFila, numCol);
+		if (isDisparado)  {
+			int estadoDisp = partida.getCasilla(numFila, numCol);
+			switch (estadoDisp) {
+			case AGUA:
+				pr.print("style=\"background-color:cyan\"");
+				break;
+			case TOCADO:
+				pr.print("style=\"background-color:orange\"");
+				break;
+			case HUNDIDO:
+				pr.print("style=\"background-color:red\"");
+			}
+			}
+		pr.print("><input type=\"radio\" name=\"disparo\" value=\"" + numFila + "x" + numCol + "\"></td>");
+	}
+	
+	/**
+	 * Método para escribir el código HTML para los enlaces
+	 */
+	private void crearLinks() {
+		pr.println("<a href=\"SolucionPartidaServlet\">Muestra solución</a><br>"
+				+ "<a href=\"NuevaPartidaServlet\">Nueva Partida</a><br>"
+				+ "<a href=\"SalirPartidaServlet\">Salir</a>");
+	}
+	
+	/** 
+	 * Método para escribir el pie del código HTML
+	 */
+	private void escribierPie() {
+		pr.println("</body>"
+				+ "</html>");
+	}
 } // fin servlet

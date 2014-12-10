@@ -88,14 +88,15 @@ public class Partida {
 	 */
     public int pruebaCasilla(int f, int c) {
     	int contenido = mar[f][c];
+    	disparos++;
     	boolean disparado = casillaDisparada(f,c);
     	if (disparado) {
 	        if(contenido>=0){  // Si contenido es > a 0 es la id de barco, no puede ser agua ni ninguna otra opcion
 	        	Barco barco = barcos.get(contenido);
 	        	barco.tocarBarco();
-	        	misDisparos[f][c] = true;
 	            mar[f][c] = TOCADO;
 	        	if(barco.estaDestruido()){ // Debemos comprobar si una vez tocado el barco ha sido destruido
+	        		quedan--;
 	                destruirBarco(barco.toString());  // Cambia todas las casillas del barco a destruidas
 	        		return contenido; // Devuelve la id del barco
 	        	}
@@ -108,8 +109,10 @@ public class Partida {
 
 
     private boolean casillaDisparada(int f, int c) {
-    	if (misDisparos[f][c] == false)
+    	if (misDisparos[f][c] == false) {
+    		misDisparos[f][c] = true;
     		return true;
+    	}
     	return false;
 	}
 
@@ -123,7 +126,7 @@ public class Partida {
         int col = Integer.parseInt(splittedString[1]);
         String orientacion = splittedString[2]; // "V" o "H"
         int tamanyo = Integer.parseInt(splittedString[3]);
-
+        
         marcarCasillasHundido(fila, col, tamanyo, orientacion);
     }
 

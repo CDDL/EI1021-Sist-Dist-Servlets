@@ -19,6 +19,13 @@ public class SalirPartidaServlet extends HttpServlet {
 	public SalirPartidaServlet() {
 		super();
 	}
+	
+	/**
+	 * Metodo que gestionara el get de este servlet.
+	 * 
+	 * @param request Objeto de peticion
+	 * @param response Objeto de respuesta
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Obtiene la session
 		HttpSession session = request.getSession();
