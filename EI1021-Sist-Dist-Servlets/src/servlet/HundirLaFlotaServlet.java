@@ -2,10 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
-
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -125,7 +122,7 @@ public class HundirLaFlotaServlet extends HttpServlet {
 				break;
 			case PROCESO:
 				pr.println("Página de resultado del disparo en (" + fila + ", " + ((char) (columna + 65)) + "): Ok!<br>"
-						+ "Barcos navegando: " + partida.getBarcosQuedan() + " - Barcos hundidos:" + (NUMBARCOS - partida.getBarcosQuedan()) + "<br>"
+						+ "Barcos navegando: " + partida.getBarcosQuedan() + " - Barcos hundidos:" + partida.getBarcosHundidos() + "<br>"
 								+ "Número de disparos efectuados: " + partida.getDisparosEfectuados() + "<br>");
 				break;
 			case FINAL:

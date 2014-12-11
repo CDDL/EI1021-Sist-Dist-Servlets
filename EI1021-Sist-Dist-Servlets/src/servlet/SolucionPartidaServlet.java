@@ -114,7 +114,7 @@ public class SolucionPartidaServlet extends HttpServlet {
 	 * @param filaActual Numero de la fila con la cual se esta trabajando.
 	 */
 	private void crearFila(PrintWriter out, int[] fila,int filaActual) {
-		out.print("<td><b>"+ filaActual+"</b></td>");
+		out.print("<td align=\"center\"><b>"+ filaActual+"</b></td>");
 		
 		//estadoPosicion es una lista que representa la fila con AZUL o ROJO, dependiendo si hay agua o barco.
 		for(int estadoPosicion: fila){
@@ -207,7 +207,7 @@ public class SolucionPartidaServlet extends HttpServlet {
 	private void crearLetras(PrintWriter out) {
 		out.print("<td></td>");
 		for (char letra = 'A'; letra <= 'H'; letra++) {
-			out.print("<th><b>"+letra+"</b></th>");
+			out.print("<td align=\"center\"><b>"+letra+"</b></tb>");
 		}
 	}
 
