@@ -19,7 +19,6 @@ public class SalirPartidaServlet extends HttpServlet {
 	public SalirPartidaServlet() {
 		super();
 	}
-	
 	/**
 	 * Metodo que gestionara el get de este servlet.
 	 * 

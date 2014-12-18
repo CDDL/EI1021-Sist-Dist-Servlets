@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import logica.Partida;
 
 public class SolucionPartidaServlet extends HttpServlet {
@@ -39,6 +41,20 @@ public class SolucionPartidaServlet extends HttpServlet {
 		
 		finalizarCodigoHTML(out);
 		
+		invalidarSesion(req);
+		
+		
+	}
+
+
+
+
+	private void invalidarSesion(HttpServletRequest request) {
+		// Obtiene la session
+		HttpSession session = request.getSession();
+	
+		// Invalidamos la session
+		session.invalidate();
 		
 	}
 

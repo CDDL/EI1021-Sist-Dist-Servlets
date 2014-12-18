@@ -121,7 +121,7 @@ public class HundirLaFlotaServlet extends HttpServlet {
 						+ "Número de disparos efectuados: 0 <br>");
 				break;
 			case PROCESO:
-				pr.println("Página de resultado del disparo en (" + fila + ", " + ((char) (columna + 65)) + "): Ok!<br>"
+				pr.println("Página de resultado del disparo en (" + fila+1 + ", " + ((char) (columna + 65)) + "): Ok!<br>"
 						+ "Barcos navegando: " + partida.getBarcosQuedan() + " - Barcos hundidos:" + partida.getBarcosHundidos() + "<br>"
 								+ "Número de disparos efectuados: " + partida.getDisparosEfectuados() + "<br>");
 				break;
